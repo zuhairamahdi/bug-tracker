@@ -19,6 +19,7 @@ func GetAllUsers() []structs.User {
 	var allUsers []structs.User
 	for _, user := range Users {
 		allUsers = append(allUsers, structs.User{
+			Id:        user.ID,
 			Username:  user.Username,
 			Email:     user.Email,
 			FirstName: user.FirstName,
