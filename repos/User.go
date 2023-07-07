@@ -12,13 +12,20 @@ import (
 	"github.com/oklog/ulid/v2"
 )
 
-const salter = "BF$#DAVcvdksj@@31"
-
-func GetAllUsers() []models.User {
+func GetAllUsers() []structs.User {
 	Users := []models.User{}
 	storage.ApplicationDB.Find(&Users)
 	fmt.Println(Users)
-	return Users
+	var allUsers []structs.User
+	for _, user := range Users {
+		allUsers = append(allUsers, structs.User{
+			Username:  user.Username,
+			Email:     user.Email,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+		})
+	}
+	return allUsers
 }
 
 func CreateNewUser(user structs.NewUser) error {
