@@ -7,7 +7,6 @@ import (
 	"bugtracker/structs"
 	"crypto/sha512"
 	"encoding/hex"
-	"fmt"
 
 	"github.com/oklog/ulid/v2"
 )
@@ -15,7 +14,6 @@ import (
 func GetAllUsers() []structs.User {
 	Users := []models.User{}
 	storage.ApplicationDB.Find(&Users)
-	fmt.Println(Users)
 	var allUsers []structs.User
 	for _, user := range Users {
 		allUsers = append(allUsers, structs.User{
