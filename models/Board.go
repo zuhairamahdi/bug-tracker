@@ -14,4 +14,5 @@ type Board struct {
 	UpdatedAt  time.Time
 	DeletedAt  gorm.DeletedAt `gorm:"index"`
 	UserID     string
+	Coulmns    []Column `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
