@@ -26,3 +26,8 @@ func CreateBoard(board structs.Board) error {
 	}
 	return nil
 }
+func GetBoard(uilid string) models.Board {
+	board := models.Board{}
+	storage.ApplicationDB.First(&board, "id = ?", uilid)
+	return board
+}

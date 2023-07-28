@@ -18,5 +18,7 @@ func setupUsersRoute(app *fiber.App) {
 }
 
 func setupBoardsRoute(app *fiber.App) {
-
+	app.Get("/api/board", routes.GetAllBoards)
+	app.Post("/api/board", routes.CreateBoard)
+	app.Get("/api/board/:id/", routes.GetBoard)
 }
