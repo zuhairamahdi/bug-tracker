@@ -9,7 +9,7 @@ import (
 )
 
 func GetAllBoards(c *fiber.Ctx) error {
-	boards := repos.GetAllBoards()
+	boards, _ := repos.Repos.BoardRepository.GetAll()
 	return c.Status(http.StatusOK).JSON(boards)
 }
 
@@ -18,7 +18,7 @@ func CreateBoard(c *fiber.Ctx) error {
 	if err := c.BodyParser(&board); err != nil {
 		return err
 	}
-	if err := repos.CreateBoard(board); err != nil {
+	if err := repos.Repos.BoardRepository.Create(board); err != nil {
 		return err
 	}
 	return c.Status(http.StatusCreated).JSON(board)
@@ -26,7 +26,13 @@ func CreateBoard(c *fiber.Ctx) error {
 
 func GetBoard(c *fiber.Ctx) error {
 	ulid := c.Params("id")
-
-	board := repos.GetBoard(ulid)
+	board := repos.Repos.BoardRepository.Get(ulid)
 	return c.Status(http.StatusOK).JSON(board)
+}
+func DeleteBoard(c *fiber.Ctx) error {
+	ulid := c.Params("id")
+	if err := repos.Repos.BoardRepository.Delete(ulid); err != nil {
+		return err
+	}
+	return c.Status(http.StatusNoContent).JSON(nil)
 }
