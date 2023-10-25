@@ -7,18 +7,22 @@ import (
 )
 
 func SetupRoutes(app *fiber.App) {
-	setupUsersRoute(app)
-	setupBoardsRoute(app)
+	apiGroup := app.Group("/api/v1")
+	setupUsersRoute(&apiGroup)
+	setupBoardsRoute(&apiGroup)
 	app.Listen(":3000")
 }
 
-func setupUsersRoute(app *fiber.App) {
-	app.Get("/api/user/", routes.GetAllUsers)
-	app.Post("/api/user", routes.CreateUser)
+func setupUsersRoute(api *fiber.Router) {
+	var group = *api
+	group.Get("/user", routes.GetAllUsers)
+	group.Get("/api/user", routes.GetAllUsers)
+	group.Post("/api/user", routes.CreateUser)
 }
 
-func setupBoardsRoute(app *fiber.App) {
-	app.Get("/api/board", routes.GetAllBoards)
-	app.Post("/api/board", routes.CreateBoard)
-	app.Get("/api/board/:id/", routes.GetBoard)
+func setupBoardsRoute(api *fiber.Router) {
+	var group = *api
+	group.Get("/board", routes.GetAllBoards)
+	group.Post("/board", routes.CreateBoard)
+	group.Get("/board/:id", routes.GetBoard)
 }
