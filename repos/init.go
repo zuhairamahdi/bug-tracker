@@ -4,12 +4,14 @@ import "bugtracker/storage"
 
 type repoType struct {
 	BoardRepository *boardRepo
+	UserRepository  *userRepo
 }
 
 var Repos *repoType
 
 func InitializeRepositories() {
 	Repos = &repoType{
-		BoardRepository: NewBoardRepo(storage.ApplicationDB),
+		BoardRepository: newBoardRepo(storage.ApplicationDB),
+		UserRepository:  newUserRepo(storage.ApplicationDB),
 	}
 }

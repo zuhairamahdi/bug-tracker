@@ -9,18 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type boardRepository interface {
-	Create(board *models.Board) error
-	Get(id string) (*models.Board, error)
-	GetAll() (*[]models.Board, error)
-	Update(board *models.Board) (*models.Board, error)
-	Delete(id string) error
-	List() ([]*models.Board, error)
-	GetByProject(id string) ([]*models.Board, error)
-	GetByName(name string) (*models.Board, error)
-	GetById(id string) (*models.Board, error)
-	GetByNameAndProject(name string, projectId string) (*models.Board, error)
-}
+//	type boardRepository interface {
+//		Create(board *models.Board) error
+//		Get(id string) (*models.Board, error)
+//		GetAll() (*[]models.Board, error)
+//		Update(board *models.Board) (*models.Board, error)
+//		Delete(id string) error
+//		List() ([]*models.Board, error)
+//		GetByProject(id string) ([]*models.Board, error)
+//		GetByName(name string) (*models.Board, error)
+//		GetById(id string) (*models.Board, error)
+//		GetByNameAndProject(name string, projectId string) (*models.Board, error)
+//	}
 type boardRepo struct {
 	storage *gorm.DB
 }
@@ -33,7 +33,7 @@ type boardRepo struct {
 //	    return board, nil
 //	}
 
-func NewBoardRepo(storage *gorm.DB) *boardRepo {
+func newBoardRepo(storage *gorm.DB) *boardRepo {
 
 	return &boardRepo{
 		storage: storage,

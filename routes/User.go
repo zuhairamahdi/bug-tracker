@@ -9,7 +9,7 @@ import (
 )
 
 func GetAllUsers(c *fiber.Ctx) error {
-	users := repos.GetAllUsers()
+	users := repos.Repos.UserRepository.GetAll()
 	return c.Status(http.StatusOK).JSON(users)
 }
 func CreateUser(c *fiber.Ctx) error {
@@ -17,7 +17,7 @@ func CreateUser(c *fiber.Ctx) error {
 	if err := c.BodyParser(&user); err != nil {
 		return err
 	}
-	if err := repos.CreateNewUser(user); err != nil {
+	if err := repos.Repos.UserRepository.CreateNewUser(user); err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
 	}
 	return c.Status(http.StatusCreated).JSON(user)
