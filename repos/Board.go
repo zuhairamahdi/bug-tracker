@@ -9,29 +9,9 @@ import (
 	"gorm.io/gorm"
 )
 
-//	type boardRepository interface {
-//		Create(board *models.Board) error
-//		Get(id string) (*models.Board, error)
-//		GetAll() (*[]models.Board, error)
-//		Update(board *models.Board) (*models.Board, error)
-//		Delete(id string) error
-//		List() ([]*models.Board, error)
-//		GetByProject(id string) ([]*models.Board, error)
-//		GetByName(name string) (*models.Board, error)
-//		GetById(id string) (*models.Board, error)
-//		GetByNameAndProject(name string, projectId string) (*models.Board, error)
-//	}
 type boardRepo struct {
 	storage *gorm.DB
 }
-
-//	func (r *boardRepo) Create(board *models.Board) (*models.Board, error) {
-//		board.ID = ulid.MustNew(ulid.Timestamp(time.Now()), nil).String()
-//	    if err := r.storage.Create(board).Error; err!= nil {
-//	        return nil, err
-//	    }
-//	    return board, nil
-//	}
 
 func newBoardRepo(storage *gorm.DB) *boardRepo {
 
