@@ -14,15 +14,14 @@ func SetupRoutes(app *fiber.App) {
 }
 
 func setupUsersRoute(api *fiber.Router) {
-	var group = *api
-	group.Get("/user", routes.GetAllUsers)
-	group.Get("/api/user", routes.GetAllUsers)
-	group.Post("/api/user", routes.CreateUser)
+	var group = (*api).Group("/user")
+	group.Get("/", routes.GetAllUsers)
+	group.Post("/", routes.CreateUser)
 }
 
 func setupBoardsRoute(api *fiber.Router) {
-	var group = *api
-	group.Get("/board", routes.GetAllBoards)
-	group.Post("/board", routes.CreateBoard)
-	group.Get("/board/:id", routes.GetBoard)
+	var group = (*api).Group("/board")
+	group.Get("/", routes.GetAllBoards)
+	group.Post("/", routes.CreateBoard)
+	group.Get("/:id", routes.GetBoard)
 }
