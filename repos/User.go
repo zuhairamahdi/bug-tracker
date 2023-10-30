@@ -6,6 +6,7 @@ import (
 	"bugtracker/structs"
 	"crypto/sha512"
 	"encoding/hex"
+	"errors"
 
 	"github.com/oklog/ulid/v2"
 	"gorm.io/gorm"
@@ -41,6 +42,25 @@ func (r *userRepo) GetAll() []structs.User {
 	return allUsers
 }
 
+func (r *userRepo) LoginUser(username string, password string) (structs.User, error) {
+	user := models.User{}
+	responseUser := structs.User{}
+	if err := r.storage.Find(&user).Where("username = ?", username).Error; err != nil {
+		return responseUser, errors.New("Incorrect username or password")
+	}
+	if comparePass(password, user.Password, user.Salt) {
+		responseUser = structs.User{
+			Id:        user.ID,
+			Username:  user.Username,
+			Email:     user.Email,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+		}
+		return responseUser, nil
+	}
+	return responseUser, errors.New("Incorrect username or password")
+}
+
 func (r *userRepo) CreateNewUser(user structs.NewUser) error {
 	salt, pass := createSaltedPass(user.Password)
 	newUser := models.User{
@@ -64,5 +84,18 @@ func createSaltedPass(password string) (string, string) {
 	saltedPass := hex.EncodeToString(hashedPass[:]) + hex.EncodeToString(hashedSalt[:])
 	SaltedPassword := sha512.Sum512([]byte(saltedPass))
 	return hex.EncodeToString(hashedSalt[:]), hex.EncodeToString(SaltedPassword[:])
+
+}
+
+func comparePass(password string, saltedPass string, salt string) bool {
+	hashedPass := sha512.Sum512([]byte(password))
+	requestedSaltedPass := hex.EncodeToString(hashedPass[:]) + salt
+	saltedPassword := sha512.Sum512([]byte(requestedSaltedPass))
+
+	if saltedPass != hex.EncodeToString(saltedPassword[:]) {
+		return false
+	}
+
+	return true
 
 }
