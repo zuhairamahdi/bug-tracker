@@ -22,3 +22,11 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 	return c.Status(http.StatusCreated).JSON(user)
 }
+
+func DeleteUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if err := repos.Repos.UserRepository.DeleteUser(id); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
+	}
+	return c.Status(http.StatusNoContent).JSON(nil)
+}

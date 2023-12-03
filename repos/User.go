@@ -77,6 +77,16 @@ func (r *userRepo) CreateNewUser(user structs.NewUser) error {
 	}
 	return nil
 }
+func (r *userRepo) DeleteUser(id string) error {
+	user := models.User{}
+	if err := r.storage.Find(&user).Where("id =?", id).Error; err != nil {
+		return err
+	}
+	if err := r.storage.Delete(&user).Error; err != nil {
+		return err
+	}
+	return nil
+}
 
 func createSaltedPass(password string) (string, string) {
 	hashedPass := sha512.Sum512([]byte(password))
