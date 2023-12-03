@@ -17,7 +17,7 @@ func CreateUser(c *fiber.Ctx) error {
 	if err := c.BodyParser(&user); err != nil {
 		return err
 	}
-	if err := repos.Repos.UserRepository.CreateNewUser(user); err != nil {
+	if err := repos.Repos.UserRepository.Create(user); err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
 	}
 	return c.Status(http.StatusCreated).JSON(user)
@@ -25,7 +25,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 func DeleteUser(c *fiber.Ctx) error {
 	id := c.Params("id")
-	if err := repos.Repos.UserRepository.DeleteUser(id); err != nil {
+	if err := repos.Repos.UserRepository.Delete(id); err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
 	}
 	return c.Status(http.StatusNoContent).JSON(nil)

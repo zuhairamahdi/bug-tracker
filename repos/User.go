@@ -42,7 +42,7 @@ func (r *userRepo) GetAll() []structs.User {
 	return allUsers
 }
 
-func (r *userRepo) LoginUser(username string, password string) (structs.User, error) {
+func (r *userRepo) Login(username string, password string) (structs.User, error) {
 	user := models.User{}
 	responseUser := structs.User{}
 	if err := r.storage.Find(&user).Where("username = ?", username).Error; err != nil {
@@ -61,7 +61,7 @@ func (r *userRepo) LoginUser(username string, password string) (structs.User, er
 	return responseUser, errors.New("Incorrect username or password")
 }
 
-func (r *userRepo) CreateNewUser(user structs.NewUser) error {
+func (r *userRepo) Create(user structs.NewUser) error {
 	salt, pass := createSaltedPass(user.Password)
 	newUser := models.User{
 		ID:        ulid.Make().String(),
@@ -77,7 +77,7 @@ func (r *userRepo) CreateNewUser(user structs.NewUser) error {
 	}
 	return nil
 }
-func (r *userRepo) DeleteUser(id string) error {
+func (r *userRepo) Delete(id string) error {
 	user := models.User{}
 	if err := r.storage.Find(&user).Where("id =?", id).Error; err != nil {
 		return err
