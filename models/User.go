@@ -20,4 +20,5 @@ type User struct {
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
 	Boards      []Board        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Roles       []Role         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
