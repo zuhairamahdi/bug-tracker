@@ -83,7 +83,7 @@ func (r *roleRepo) UnassignUserFromRole(userId uint, roleId uint) error {
 	if err := r.storage.Find(&user).Where("id =?", userId).Error; err != nil {
 		return err
 	}
-	//remove role from roles list in user
+	//remove role from roles array in user model
 	for i, role := range user.Roles {
 		if role.Id == roleId {
 			user.Roles = append(user.Roles[:i], user.Roles[i+1:]...)
@@ -106,4 +106,13 @@ func (r *roleRepo) AssignUserToRole(userId uint, roleId uint) error {
 	}
 	user.Roles = append(user.Roles, role)
 	return r.storage.Save(&user).Error
+}
+
+// Get all roles
+func (r *roleRepo) GetAll() ([]models.Role, error) {
+	roles := []models.Role{}
+	if err := r.storage.Find(&roles).Error; err != nil {
+		return roles, err
+	}
+	return roles, nil
 }
