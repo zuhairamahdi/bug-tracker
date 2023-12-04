@@ -61,7 +61,15 @@ func GetUserByUsername(c *fiber.Ctx) error {
 // deactivate user
 func DeactivateUser(c *fiber.Ctx) error {
 	id := c.Params("id")
-	if err := repos.Repos.UserRepository.Delete(id); err != nil {
+	if err := repos.Repos.UserRepository.Deactivate(id); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
+	}
+	return c.Status(http.StatusCreated).JSON(id)
+}
+
+func ActivateUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if err := repos.Repos.UserRepository.Activate(id); err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
 	}
 	return c.Status(http.StatusCreated).JSON(id)

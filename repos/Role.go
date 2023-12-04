@@ -116,3 +116,19 @@ func (r *roleRepo) GetAll() ([]models.Role, error) {
 	}
 	return roles, nil
 }
+
+// Get role by id
+func (r *roleRepo) GetById(id uint) (models.Role, error) {
+	role := models.Role{}
+	if err := r.storage.Find(&role).Where("id =?", id).Error; err != nil {
+		return role, err
+	}
+	return role, nil
+}
+
+func (r *roleRepo) Create(role models.Role) error {
+	if err := r.storage.Create(&role).Error; err != nil {
+		return err
+	}
+	return nil
+}
