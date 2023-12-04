@@ -23,6 +23,19 @@ func CreateUser(c *fiber.Ctx) error {
 	return c.Status(http.StatusCreated).JSON(user)
 }
 
+// Create route for updating a user
+func UpdateUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+	user := structs.NewUser{}
+	if err := c.BodyParser(&user); err != nil {
+		return err
+	}
+	if err := repos.Repos.UserRepository.Update(id, user); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
+	}
+	return c.Status(http.StatusCreated).JSON(user)
+}
+
 func DeleteUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 	if err := repos.Repos.UserRepository.Delete(id); err != nil {
