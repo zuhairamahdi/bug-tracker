@@ -5,8 +5,10 @@ import (
 	"bugtracker/models"
 	"bugtracker/structs"
 	"crypto/sha512"
+	"database/sql"
 	"encoding/hex"
 	"errors"
+	"time"
 
 	"github.com/oklog/ulid/v2"
 	"gorm.io/gorm"
@@ -113,6 +115,51 @@ func (r *userRepo) AddUserToRole(id string, role models.Role) error {
 		return err
 	}
 	return nil
+}
+
+// get user by id
+func (r *userRepo) GetById(id string) (models.User, error) {
+	user := models.User{}
+	if err := r.storage.Find(&user).Where("id =?", id).Error; err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
+// Activate user by id
+func (r *userRepo) Activate(id string) error {
+	user := models.User{}
+	if err := r.storage.Find(&user).Where("id =?", id).Error; err != nil {
+		return err
+	}
+	user.ActivatedAt = sql.NullTime{Time: time.Now()}
+	user.Active = true
+	if err := r.storage.Save(&user).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// Deactivate user by id
+func (r *userRepo) Deactivate(id string) error {
+	user := models.User{}
+	if err := r.storage.Find(&user).Where("id =?", id).Error; err != nil {
+		return err
+	}
+	user.ActivatedAt = sql.NullTime{}
+	user.Active = false
+	if err := r.storage.Save(&user).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *userRepo) GetByUsername(username string) (models.User, error) {
+	user := models.User{}
+	if err := r.storage.Find(&user).Where("username =?", username).Error; err != nil {
+		return user, err
+	}
+	return user, nil
 }
 
 func createSaltedPass(password string) (string, string) {

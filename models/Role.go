@@ -12,5 +12,4 @@ type Role struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Users     []User         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }

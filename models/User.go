@@ -15,10 +15,11 @@ type User struct {
 	LastName    string `json:"last_name"`
 	Password    string
 	Salt        string
+	Active      bool `json:"active"`
 	ActivatedAt sql.NullTime
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
 	Boards      []Board        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Roles       []Role         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Roles       []Role         `gorm:"many2many:user_roles,constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }

@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"bugtracker/models"
 	"bugtracker/repos"
 	"bugtracker/structs"
 	"net/http"
@@ -38,11 +39,32 @@ func UpdateUser(c *fiber.Ctx) error {
 // Add user to role
 func AddUserToRole(c *fiber.Ctx) error {
 	id := c.Params("id")
-	role := c.Params("role")
+	role := models.Role{
+		Name: c.Params("role"),
+	}
 	if err := repos.Repos.UserRepository.AddUserToRole(id, role); err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
 	}
 	return c.Status(http.StatusCreated).JSON(role)
+}
+
+// get user by username
+func GetUserByUsername(c *fiber.Ctx) error {
+	username := c.Params("username")
+	user, err := repos.Repos.UserRepository.GetByUsername(username)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
+	}
+	return c.Status(http.StatusOK).JSON(user)
+}
+
+// deactivate user
+func DeactivateUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if err := repos.Repos.UserRepository.Delete(id); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
+	}
+	return c.Status(http.StatusCreated).JSON(id)
 }
 
 func DeleteUser(c *fiber.Ctx) error {
