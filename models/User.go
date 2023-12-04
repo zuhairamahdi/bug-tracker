@@ -23,4 +23,5 @@ type User struct {
 	Boards      []Board        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Roles       []Role         `gorm:"many2many:user_roles,constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Tasks       []Task         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	ProfilePic  string         `json:"profile_pic"`
 }
