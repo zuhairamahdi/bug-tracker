@@ -57,3 +57,53 @@ func (r *roleRepo) DeleteById(id uint) error {
 	}
 	return r.storage.Delete(&role).Error
 }
+
+// Find users by role id
+func (r *roleRepo) FindUsersByRoleId(id uint) ([]models.User, error) {
+	users := []models.User{}
+	if err := r.storage.Find(&users).Where("role_id =?", id).Error; err != nil {
+		return users, err
+	}
+	return users, nil
+}
+
+// Find users by role name
+func (r *roleRepo) FindUsersByRoleName(name string) ([]models.User, error) {
+	users := []models.User{}
+	if err := r.storage.Find(&users).Where("role_name =?", name).Error; err != nil {
+		return users, err
+	}
+	return users, nil
+}
+
+// unassign user from role
+func (r *roleRepo) UnassignUserFromRole(userId uint, roleId uint) error {
+
+	user := models.User{}
+	if err := r.storage.Find(&user).Where("id =?", userId).Error; err != nil {
+		return err
+	}
+	//remove role from roles list in user
+	for i, role := range user.Roles {
+		if role.Id == roleId {
+			user.Roles = append(user.Roles[:i], user.Roles[i+1:]...)
+			break
+		}
+	}
+	return r.storage.Save(&user).Error
+
+}
+
+// Assign user to role
+func (r *roleRepo) AssignUserToRole(userId uint, roleId uint) error {
+	user := models.User{}
+	if err := r.storage.Find(&user).Where("id =?", userId).Error; err != nil {
+		return err
+	}
+	role := models.Role{}
+	if err := r.storage.Find(&role).Where("id =?", roleId).Error; err != nil {
+		return err
+	}
+	user.Roles = append(user.Roles, role)
+	return r.storage.Save(&user).Error
+}

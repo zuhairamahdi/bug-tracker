@@ -7,7 +7,7 @@ import (
 )
 
 type Role struct {
-	Id        string `json:"id" gorm:"primaryKey;autoIncrement:false"`
+	Id        uint   `json:"id" gorm:"primaryKey;autoIncrement:true"`
 	Name      string `json:"name" gorm:"index;unique"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
