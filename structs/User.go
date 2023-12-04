@@ -16,3 +16,13 @@ type User struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 }
+
+type Login struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	Token string `json:"token"`
+	User  User   `json:"user"`
+}

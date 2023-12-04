@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"bugtracker/common"
 	"bugtracker/models"
 	"bugtracker/repos"
 	"bugtracker/structs"
@@ -81,4 +82,19 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
 	}
 	return c.Status(http.StatusNoContent).JSON(nil)
+}
+
+// Login
+func Login(c *fiber.Ctx) error {
+	user_obj := structs.Login{}
+	if err := c.BodyParser(&user_obj); err != nil {
+		return err
+	}
+	user, err := repos.Repos.UserRepository.Login(user_obj.Username, user_obj.Password)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
+	}
+	token, err := common.CreateToken(user)
+	response := structs.LoginResponse{Token: token, User: user}
+	return c.Status(http.StatusCreated).JSON(response)
 }
