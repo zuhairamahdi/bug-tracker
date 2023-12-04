@@ -23,7 +23,6 @@ func CreateUser(c *fiber.Ctx) error {
 	return c.Status(http.StatusCreated).JSON(user)
 }
 
-// Create route for updating a user
 func UpdateUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 	user := structs.NewUser{}
@@ -34,6 +33,16 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
 	}
 	return c.Status(http.StatusCreated).JSON(user)
+}
+
+// Add user to role
+func AddUserToRole(c *fiber.Ctx) error {
+	id := c.Params("id")
+	role := c.Params("role")
+	if err := repos.Repos.UserRepository.AddUserToRole(id, role); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
+	}
+	return c.Status(http.StatusCreated).JSON(role)
 }
 
 func DeleteUser(c *fiber.Ctx) error {

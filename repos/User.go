@@ -103,6 +103,18 @@ func (r *userRepo) Update(id string, user structs.NewUser) error {
 
 }
 
+func (r *userRepo) AddUserToRole(id string, role models.Role) error {
+	userToUpdate := models.User{}
+	if err := r.storage.Find(&userToUpdate).Where("id =?", id).Error; err != nil {
+		return err
+	}
+	userToUpdate.Roles = append(userToUpdate.Roles, role)
+	if err := r.storage.Save(&userToUpdate).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func createSaltedPass(password string) (string, string) {
 	hashedPass := sha512.Sum512([]byte(password))
 	hashedSalt := sha512.Sum512([]byte(ext.RandStringBytes(10)))
