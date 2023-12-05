@@ -1,11 +1,14 @@
 package structs
 
+import "bugtracker/models"
+
 type NewUser struct {
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Password  string `json:"password"`
+	Username  string        `json:"username"`
+	Email     string        `json:"email"`
+	FirstName string        `json:"first_name"`
+	LastName  string        `json:"last_name"`
+	Password  string        `json:"password"`
+	Roles     []models.Role `json:"roles"`
 }
 
 type User struct {

@@ -31,12 +31,18 @@ func (r *userRepo) MigrateInitialUser() {
 	if r.storage.Migrator().HasTable(&models.User{}) {
 		if err := r.storage.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 			//Insert seed data
+			//get admin role
+
+			roles := []models.Role{}
+			adminRole := Repos.RoleRepository.GetByName("admin")
+			roles = append(roles, adminRole)
 			admin := structs.NewUser{
 				Username:  "admin",
 				Email:     "admin@localhost",
 				FirstName: "Admin",
 				LastName:  "Admin",
 				Password:  "default",
+				Roles:     roles,
 			}
 			r.Create(admin)
 		}
@@ -89,6 +95,7 @@ func (r *userRepo) Create(user structs.NewUser) error {
 		LastName:  user.LastName,
 		Password:  pass,
 		Salt:      salt,
+		Roles:     user.Roles,
 	}
 	if query := r.storage.Create(&newUser); query.Error != nil {
 		return query.Error

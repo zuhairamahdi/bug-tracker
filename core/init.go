@@ -13,6 +13,7 @@ func Init() {
 	models.Migrate()
 	app := fiber.New()
 	repos.InitializeRepositories()
+	repos.Repos.RoleRepository.MigrateInitialRoles()
 	repos.Repos.UserRepository.MigrateInitialUser()
 	SetupRoutes(app)
 }

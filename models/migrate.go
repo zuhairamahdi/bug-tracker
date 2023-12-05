@@ -5,7 +5,7 @@ import (
 )
 
 func Migrate() error {
-	storage.ApplicationDB.AutoMigrate(&User{}, &Board{}, &Column{}, &Task{}, &Comment{})
+	storage.ApplicationDB.AutoMigrate(&User{}, &Board{}, &Column{}, &Task{}, &Comment{}, Role{})
 	// MigrateInitialUser()
 	return nil
 }

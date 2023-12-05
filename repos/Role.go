@@ -2,6 +2,8 @@ package repos
 
 import (
 	"bugtracker/models"
+	"errors"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -130,5 +132,47 @@ func (r *roleRepo) Create(role models.Role) error {
 	if err := r.storage.Create(&role).Error; err != nil {
 		return err
 	}
+	return nil
+}
+
+func (r *roleRepo) GetByName(name string) models.Role {
+	role := models.Role{}
+	r.storage.Find(&role).Where("name =?", name)
+	return role
+}
+
+func (r *roleRepo) MigrateInitialRoles() error {
+	if r.storage.Migrator().HasTable(&models.Role{}) {
+		if err := r.storage.First(&models.Role{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			roles := []models.Role{
+				{
+					Name:      "admin",
+					CreatedAt: time.Now(),
+					UpdatedAt: time.Now(),
+				},
+				{
+					Name:      "viewer",
+					CreatedAt: time.Now(),
+					UpdatedAt: time.Now(),
+				},
+				{
+					Name:      "project_owner",
+					CreatedAt: time.Now(),
+					UpdatedAt: time.Now(),
+				},
+				{
+					Name:      "contributor",
+					CreatedAt: time.Now(),
+					UpdatedAt: time.Now(),
+				},
+			}
+			for _, role := range roles {
+				if err := r.Create(role); err != nil {
+					return err
+				}
+			}
+		}
+	}
+
 	return nil
 }
