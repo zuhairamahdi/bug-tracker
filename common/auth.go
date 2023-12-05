@@ -13,11 +13,12 @@ func CreateToken(user structs.User) (string, error) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["user_id"] = user.Id
 	claims["exp"] = time.Now().Add(time.Hour * 24).UTC()
-	claims["username"] = user.Username
+	claims["user"] = user
 	secretbox := []byte(os.Getenv("JWT_SECRET"))
 	if len(secretbox) == 0 {
 		secretbox = []byte("secret")
 	}
 	tokenString, err := token.SignedString(secretbox)
+
 	return tokenString, err
 }

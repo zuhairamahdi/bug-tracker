@@ -5,6 +5,7 @@ import (
 	"bugtracker/models"
 	"bugtracker/repos"
 	"bugtracker/structs"
+	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -95,6 +96,14 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
 	}
 	token, err := common.CreateToken(user)
+	//Save user in session
+
+	//Add user to c.Locals("user")
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
+	}
+	u := c.Locals("user")
+	fmt.Println(u)
 	response := structs.LoginResponse{Token: token, User: user}
 	return c.Status(http.StatusCreated).JSON(response)
 }

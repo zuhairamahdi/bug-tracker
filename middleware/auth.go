@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -20,14 +21,18 @@ func JWTmiddleware(c *fiber.Ctx) error {
 
 	token_value := strings.Split(string(token), "Bearer ")[1]
 	//decrypt the token
-	// user := c.Locals("user")
 	claims := jwt.MapClaims{}
 	jwt.ParseWithClaims(token_value, &claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte("secret"), nil
 	})
-	for key, val := range claims {
-		fmt.Printf("Key: %v, value: %v\n", key, val)
+	//Check if 'exp' is in the future using time.Now()
+	exp, _ := time.Parse(time.RFC3339, fmt.Sprintf("%s", claims["exp"]))
+	if exp.Before(time.Now()) {
+		return c.Status(401).JSON(fiber.Map{
+			"message": "Unauthorized",
+		})
 	}
 
+	c.Locals("user", claims["user"])
 	return c.Next()
 }
