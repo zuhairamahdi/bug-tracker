@@ -14,11 +14,9 @@ func GetUserData(c *fiber.Ctx) (structs.User, error) {
 	if err != nil {
 		return user, err
 	}
-
 	err = json.Unmarshal(userJson, &user)
 	if err != nil {
 		return user, err
 	}
-
 	return user, nil
 }

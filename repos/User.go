@@ -24,9 +24,25 @@ func newUserRepo(storage *gorm.DB) *userRepo {
 	}
 }
 
-// type userRepository interface {
-// 	GetAll() []models.User
-// }
+//	type userRepository interface {
+//		GetAll() []models.User
+//	}
+func (r *userRepo) MigrateInitialUser() {
+	if r.storage.Migrator().HasTable(&models.User{}) {
+		if err := r.storage.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			//Insert seed data
+			admin := structs.NewUser{
+				Username:  "admin",
+				Email:     "admin@localhost",
+				FirstName: "Admin",
+				LastName:  "Admin",
+				Password:  "default",
+			}
+			r.Create(admin)
+		}
+	}
+
+}
 
 func (r *userRepo) GetAll() []structs.User {
 	Users := []models.User{}
