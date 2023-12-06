@@ -2,6 +2,7 @@ package repos
 
 import (
 	"bugtracker/models"
+	"bugtracker/structs"
 
 	"gorm.io/gorm"
 )
@@ -14,9 +15,9 @@ func newBoardUserRoleRepo(storage *gorm.DB) *boardUserRoleRepo {
 	return &boardUserRoleRepo{storage: storage}
 }
 
-func (r *boardUserRoleRepo) AssignUserToBoardRole(user models.User, role models.Role, board models.Board) error {
+func (r *boardUserRoleRepo) AssignUserToBoardRole(user structs.User, role models.Role, board models.Board) error {
 	boardUserRole := models.BoardUserRole{
-		UserID:  user.ID,
+		UserID:  user.Id,
 		RoleID:  role.ID,
 		BoardID: board.ID,
 	}
@@ -46,9 +47,9 @@ func (r *boardUserRoleRepo) GetBoardUserRoles(board models.Board) ([]models.Boar
 	return boardUserRoles, nil
 }
 
-func (r *boardUserRoleRepo) IsUserHasRoleForBoard(user models.User, role models.Role, board models.Board) (bool, error) {
+func (r *boardUserRoleRepo) IsUserHasRoleForBoard(user structs.User, role models.Role, board models.Board) (bool, error) {
 	var boardUserRoles []models.BoardUserRole
-	if query := r.storage.Where("board_id =? and user_id =? and role_id =?", board.ID, user.ID, role.ID).Find(&boardUserRoles); query.Error != nil {
+	if query := r.storage.Where("board_id =? and user_id =? and role_id =?", board.ID, user.Id, role.ID).Find(&boardUserRoles); query.Error != nil {
 		return false, query.Error
 	}
 	if len(boardUserRoles) > 0 {

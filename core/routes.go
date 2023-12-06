@@ -44,3 +44,11 @@ func setupRolesRoute(api *fiber.Router) {
 	group.Post("/", routes.CreateRole)
 	group.Get("/:id", routes.GetRole)
 }
+
+// Setup Board User Roles routes
+func setupBoardUserRolesRoute(api *fiber.Router) {
+	var group = (*api).Group("/board-user-role").Use(middleware.JWTmiddleware)
+	group.Get("/", routes.GetAllBoardUserRoles)
+	group.Get("/:board_id/:role_id", routes.HasAccessToBoardUsers)
+	group.Post("/:board_id/:role_id", routes.AssignBoardUserRoles)
+}
