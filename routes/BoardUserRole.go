@@ -54,3 +54,20 @@ func AssignBoardUserRoles(c *fiber.Ctx) error {
 	}
 	return c.Status(http.StatusOK).JSON(struct{}{})
 }
+
+func UnassignUserFromBoardRole(c *fiber.Ctx) error {
+	user, err := appcontext.GetUserData(c)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR0", Message: err.Error()})
+	}
+	boardId := c.Params("board_id")
+	roleId, _ := strconv.ParseUint(c.Params("role_id"), 10, 64)
+
+	board := repos.Repos.BoardRepository.Get(boardId)
+	role, _ := repos.Repos.RoleRepository.FindById(uint(roleId))
+	err = repos.Repos.BoardUserRoleRepository.UnassignUserFromBoardRole(user, role, board)
+	if err != nil {
+		return err
+	}
+	return c.Status(http.StatusOK).JSON(struct{}{})
+}

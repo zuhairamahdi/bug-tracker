@@ -27,9 +27,9 @@ func (r *boardUserRoleRepo) AssignUserToBoardRole(user structs.User, role models
 	return nil
 }
 
-func (r *boardUserRoleRepo) UnassignUserFromBoardRole(userRepo models.User, role models.Role, board models.Board) error {
+func (r *boardUserRoleRepo) UnassignUserFromBoardRole(user structs.User, role models.Role, board models.Board) error {
 	boardUserRole := models.BoardUserRole{
-		UserID:  userRepo.ID,
+		UserID:  user.Id,
 		RoleID:  role.ID,
 		BoardID: board.ID,
 	}

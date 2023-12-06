@@ -12,6 +12,7 @@ func SetupRoutes(app *fiber.App) {
 	setupUsersRoute(&apiGroup)
 	setupBoardsRoute(&apiGroup)
 	setupPublicRoutes(&apiGroup)
+	setupBoardUserRolesRoute(&apiGroup)
 	app.Listen(":3000")
 }
 
@@ -50,5 +51,6 @@ func setupBoardUserRolesRoute(api *fiber.Router) {
 	var group = (*api).Group("/board-user-role").Use(middleware.JWTmiddleware)
 	group.Get("/", routes.GetAllBoardUserRoles)
 	group.Get("/:board_id/:role_id", routes.HasAccessToBoardUsers)
-	group.Post("/:board_id/:role_id", routes.AssignBoardUserRoles)
+	group.Post("/assign/:board_id/:role_id", routes.AssignBoardUserRoles)
+	group.Post("/unassign/:board_id/:role_id", routes.UnassignUserFromBoardRole)
 }
