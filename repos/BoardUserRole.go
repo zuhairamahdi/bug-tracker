@@ -37,3 +37,22 @@ func (r *boardUserRoleRepo) UnassignUserFromBoardRole(userRepo models.User, role
 	}
 	return nil
 }
+
+func (r *boardUserRoleRepo) GetBoardUserRoles(board models.Board) ([]models.BoardUserRole, error) {
+	var boardUserRoles []models.BoardUserRole
+	if query := r.storage.Where("board_id =?", board.ID).Find(&boardUserRoles); query.Error != nil {
+		return nil, query.Error
+	}
+	return boardUserRoles, nil
+}
+
+func (r *boardUserRoleRepo) IsUserHasRoleForBoard(user models.User, role models.Role, board models.Board) (bool, error) {
+	var boardUserRoles []models.BoardUserRole
+	if query := r.storage.Where("board_id =? and user_id =? and role_id =?", board.ID, user.ID, role.ID).Find(&boardUserRoles); query.Error != nil {
+		return false, query.Error
+	}
+	if len(boardUserRoles) > 0 {
+		return true, nil
+	}
+	return false, nil
+}
