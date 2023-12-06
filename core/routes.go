@@ -22,29 +22,25 @@ func setupPublicRoutes(api *fiber.Router) {
 
 func setupUsersRoute(api *fiber.Router) {
 	var group = (*api).Group("/user").Use(middleware.JWTmiddleware)
-	//group.Use(middleware.AuthMiddleware)
 
 	group.Get("/", routes.GetAllUsers)
 	group.Post("/", routes.CreateUser)
-	// group.Put("/:id", routes.UpdateUser)
-	// group.Delete("/:id", routes.DeleteUser)
-	// group.Put("/:id/activate", routes.ActivateUser)
-	// group.Put("/:id/deactivate", routes.DeactivateUser)
+	group.Put("/:id", routes.UpdateUser)
+	group.Delete("/:id", routes.DeleteUser)
+	group.Put("/:id/activate", routes.ActivateUser)
+	group.Put("/:id/deactivate", routes.DeactivateUser)
 }
 
 func setupBoardsRoute(api *fiber.Router) {
 	var group = (*api).Group("/board").Use(middleware.JWTmiddleware)
-	//group.Use(middleware.AuthMiddleware)
 	group.Get("/", routes.GetAllBoards)
 	group.Post("/", routes.CreateBoard)
-	// group.Get("/:id", routes.GetBoard)
+	group.Get("/:id", routes.GetBoard)
 }
 
 func setupRolesRoute(api *fiber.Router) {
 	var group = (*api).Group("/role").Use(middleware.JWTmiddleware)
-	// group.Use(middleware.AuthMiddleware)
-	//use AuthMiddleware in these routes
 	group.Get("/", routes.GetAllRoles)
 	group.Post("/", routes.CreateRole)
-	// group.Get("/:id", routes.GetRole)
+	group.Get("/:id", routes.GetRole)
 }
