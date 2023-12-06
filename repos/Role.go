@@ -87,7 +87,7 @@ func (r *roleRepo) UnassignUserFromRole(userId uint, roleId uint) error {
 	}
 	//remove role from roles array in user model
 	for i, role := range user.Roles {
-		if role.Id == roleId {
+		if role.ID == roleId {
 			user.Roles = append(user.Roles[:i], user.Roles[i+1:]...)
 			break
 		}

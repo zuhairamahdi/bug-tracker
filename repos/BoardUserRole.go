@@ -17,7 +17,7 @@ func newBoardUserRoleRepo(storage *gorm.DB) *boardUserRoleRepo {
 func (r *boardUserRoleRepo) AssignUserToBoardRole(user models.User, role models.Role, board models.Board) error {
 	boardUserRole := models.BoardUserRole{
 		UserID:  user.ID,
-		RoleID:  role.Id,
+		RoleID:  role.ID,
 		BoardID: board.ID,
 	}
 	if query := r.storage.Create(&boardUserRole); query.Error != nil {
@@ -29,7 +29,7 @@ func (r *boardUserRoleRepo) AssignUserToBoardRole(user models.User, role models.
 func (r *boardUserRoleRepo) UnassignUserFromBoardRole(userRepo models.User, role models.Role, board models.Board) error {
 	boardUserRole := models.BoardUserRole{
 		UserID:  userRepo.ID,
-		RoleID:  role.Id,
+		RoleID:  role.ID,
 		BoardID: board.ID,
 	}
 	if query := r.storage.Delete(&boardUserRole); query.Error != nil {
