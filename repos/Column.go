@@ -55,3 +55,31 @@ func (r *columnRepo) Update(column structs.Column) error {
 	}
 	return nil
 }
+
+func (r *columnRepo) Delete(id string) error {
+	if query := r.storage.Delete(&models.Column{ID: id}); query.Error != nil {
+		return query.Error
+	}
+	return nil
+}
+
+func (r *columnRepo) UpdateTitle(id string, title string) error {
+	if query := r.storage.Model(&models.Column{}).Where("id =?", id).Update("title", title); query.Error != nil {
+		return query.Error
+	}
+	return nil
+}
+
+func (r *columnRepo) UpdateDesciption(id string, description string) error {
+	if query := r.storage.Model(&models.Column{}).Where("id =?", id).Update("desciption", description); query.Error != nil {
+		return query.Error
+	}
+	return nil
+}
+
+func (r *columnRepo) UpdateColor(id string, color string) error {
+	if query := r.storage.Model(&models.Column{}).Where("id =?", id).Update("color", color); query.Error != nil {
+		return query.Error
+	}
+	return nil
+}

@@ -69,5 +69,5 @@ func UnassignUserFromBoardRole(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.Status(http.StatusOK).JSON(struct{}{})
+	return c.SendStatus(http.StatusOK)
 }
