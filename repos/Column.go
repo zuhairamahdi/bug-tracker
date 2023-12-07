@@ -1,8 +1,10 @@
 package repos
 
 import (
+	"bugtracker/ext"
 	"bugtracker/models"
 	"bugtracker/structs"
+	"errors"
 
 	"github.com/oklog/ulid/v2"
 	"gorm.io/gorm"
@@ -78,6 +80,11 @@ func (r *columnRepo) UpdateDesciption(id string, description string) error {
 }
 
 func (r *columnRepo) UpdateColor(id string, color string) error {
+	// check if color is a valid hex color
+	isValidColor := ext.IsColorHex(color)
+	if !isValidColor {
+		return errors.New("Invalid color")
+	}
 	if query := r.storage.Model(&models.Column{}).Where("id =?", id).Update("color", color); query.Error != nil {
 		return query.Error
 	}
