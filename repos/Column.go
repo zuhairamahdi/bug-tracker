@@ -31,12 +31,13 @@ func (r *columnRepo) CreateDefaultColumns(boardId string) error {
 	//create 4 columns (pending, in progress, stuck and done)
 	columns := []models.Column{
 		{
-			ID:        ulid.MustNew(ulid.Now(), nil).String(),
-			Title:     "Pending",
-			BoardID:   boardId,
-			Color:     "#87a2c7",
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+			ID:         ulid.MustNew(ulid.Now(), nil).String(),
+			Title:      "Pending",
+			Desciption: "This column is used to show tasks that are not yet started",
+			BoardID:    boardId,
+			Color:      "#87a2c7",
+			CreatedAt:  time.Now(),
+			UpdatedAt:  time.Now(),
 		},
 		{
 			ID:         ulid.MustNew(ulid.Now(), nil).String(),
