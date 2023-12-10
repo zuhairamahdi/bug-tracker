@@ -7,6 +7,7 @@ type repoType struct {
 	UserRepository          *userRepo
 	RoleRepository          *roleRepo
 	BoardUserRoleRepository *boardUserRoleRepo
+	ColumnRepository        *columnRepo
 }
 
 var Repos *repoType
@@ -17,5 +18,6 @@ func InitializeRepositories() {
 		UserRepository:          newUserRepo(storage.ApplicationDB),
 		RoleRepository:          newRoleRepo(storage.ApplicationDB),
 		BoardUserRoleRepository: newBoardUserRoleRepo(storage.ApplicationDB),
+		ColumnRepository:        newColumnRepo(storage.ApplicationDB),
 	}
 }

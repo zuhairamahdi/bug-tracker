@@ -4,7 +4,10 @@ import (
 	"bugtracker/ext"
 	"bugtracker/models"
 	"bugtracker/structs"
+	"crypto/rand"
 	"errors"
+	"log"
+	"time"
 
 	"github.com/oklog/ulid/v2"
 	"gorm.io/gorm"
@@ -24,6 +27,64 @@ func (r *columnRepo) GetAllByBoard(boardId string) ([]models.Column, error) {
 	return columns, err
 }
 
+func (r *columnRepo) CreateDefaultColumns(boardId string) error {
+	//create 4 columns (pending, in progress, stuck and done)
+	columns := []models.Column{
+		{
+			ID:        ulid.MustNew(ulid.Now(), nil).String(),
+			Title:     "Pending",
+			BoardID:   boardId,
+			Color:     "#87a2c7",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		},
+		{
+			ID:         ulid.MustNew(ulid.Now(), nil).String(),
+			Title:      "In Progress",
+			Desciption: "This column is used to track the progress of the task",
+			BoardID:    boardId,
+			Color:      "#ffcc00",
+			CreatedAt:  time.Now(),
+			UpdatedAt:  time.Now(),
+		},
+		{
+			ID:         ulid.MustNew(ulid.Now(), nil).String(),
+			Title:      "Stuck",
+			Desciption: "This column is used to mark tasks that are stuck in the backlog",
+			BoardID:    boardId,
+			Color:      "#e03b24",
+			CreatedAt:  time.Now(),
+			UpdatedAt:  time.Now(),
+		},
+		{
+			ID:         ulid.MustNew(ulid.Now(), nil).String(),
+			Title:      "Done",
+			Desciption: "This column is used to mark tasks that have been completed",
+			BoardID:    boardId,
+			Color:      "#64a338",
+			CreatedAt:  time.Now(),
+			UpdatedAt:  time.Now(),
+		},
+	}
+
+	for i := 0; i < len(columns); i++ {
+		entropy := make([]byte, 16)
+		_, err := rand.Read(entropy)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		entropySource := rand.Reader
+		if err != nil {
+			log.Fatal(err)
+		}
+		id := ulid.MustNew(ulid.Now(), entropySource).String()
+		columns[i].ID = id
+	}
+
+	err := r.storage.Create(&columns).Error
+	return err
+}
 func (r *columnRepo) Create(column structs.Column) error {
 	newColumn := models.Column{
 		ID:         ulid.Make().String(),

@@ -26,7 +26,7 @@ func (r *boardRepo) GetAll() ([]models.Board, error) {
 	return boards, err
 }
 
-func (r *boardRepo) Create(board structs.Board) error {
+func (r *boardRepo) Create(board structs.Board) (models.Board, error) {
 	newBoard := models.Board{
 		ID:         ulid.Make().String(),
 		Title:      board.Title,
@@ -34,9 +34,9 @@ func (r *boardRepo) Create(board structs.Board) error {
 		UserID:     board.UserId,
 	}
 	if query := r.storage.Create(&newBoard); query.Error != nil {
-		return query.Error
+		return models.Board{}, query.Error
 	}
-	return nil
+	return newBoard, nil
 }
 
 func (r *boardRepo) Get(uilid string) models.Board {

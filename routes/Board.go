@@ -33,7 +33,12 @@ func CreateBoard(c *fiber.Ctx) error {
 	if !canCreate {
 		return c.Status(http.StatusForbidden).JSON(map[string]string{"message": "You are not authorized to create this board"})
 	}
-	if err := repos.Repos.BoardRepository.Create(board); err != nil {
+	newBoard, err := repos.Repos.BoardRepository.Create(board)
+	if err != nil {
+		return err
+	}
+	// create default columns
+	if err := repos.Repos.ColumnRepository.CreateDefaultColumns(newBoard.ID); err != nil {
 		return err
 	}
 	return c.Status(http.StatusCreated).JSON(board)
