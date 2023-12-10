@@ -62,3 +62,12 @@ func GetRole(c *fiber.Ctx) error {
 	}
 	return c.Status(http.StatusOK).JSON(role)
 }
+
+func GetUsersByRoleName(c *fiber.Ctx) error {
+	roleName := c.Params("name")
+	users, err := repos.Repos.RoleRepository.FindUsersByRoleName(roleName)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(structs.ErrorResponse{ErrorCode: "ERR01", Message: err.Error()})
+	}
+	return c.Status(http.StatusOK).JSON(users)
+}

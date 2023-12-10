@@ -9,6 +9,7 @@ const (
 )
 
 // Task statuses
+
 const (
 	OpenStatus       = "open"
 	InProgressStatus = "in_progress"

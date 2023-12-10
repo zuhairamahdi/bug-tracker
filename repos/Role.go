@@ -2,6 +2,7 @@ package repos
 
 import (
 	"bugtracker/models"
+	"bugtracker/structs"
 	"errors"
 	"time"
 
@@ -70,12 +71,32 @@ func (r *roleRepo) FindUsersByRoleId(id uint) ([]models.User, error) {
 }
 
 // Find users by role name
-func (r *roleRepo) FindUsersByRoleName(name string) ([]models.User, error) {
+func (r *roleRepo) FindUsersByRoleName(name string) ([]structs.UserWithRoles, error) {
 	users := []models.User{}
-	if err := r.storage.Find(&users).Where("role_name =?", name).Error; err != nil {
-		return users, err
+
+	if err := r.storage.Preload("Roles").Find(&users).Where("role_name =?", name).Error; err != nil {
+		return nil, err
 	}
-	return users, nil
+	//Convert []models.User to []UserWithRoles
+	usersWithRoles := make([]structs.UserWithRoles, len(users))
+	for i, user := range users {
+		// Convert models.User to structs.User
+		usersWithRoles[i].User = structs.User{
+			Id:        user.ID,
+			Username:  user.Username,
+			Email:     user.Email,
+			Active:    user.Active,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+		}
+
+		usersWithRoles[i].Roles = make([]structs.Role, len(user.Roles))
+		for j, role := range user.Roles {
+			usersWithRoles[i].Roles[j].Id = role.ID
+			usersWithRoles[i].Roles[j].Name = role.Name
+		}
+	}
+	return usersWithRoles, nil
 }
 
 // unassign user from role
