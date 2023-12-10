@@ -1,6 +1,7 @@
 package routes
 
 import (
+	appcontext "bugtracker/app-context"
 	"bugtracker/repos"
 	"bugtracker/structs"
 	"net/http"
@@ -18,10 +19,25 @@ func CreateBoard(c *fiber.Ctx) error {
 	if err := c.BodyParser(&board); err != nil {
 		return err
 	}
+	//get user details from appcontext
+	user, err := appcontext.GetUserData(c)
+	if err != nil {
+		return err
+	}
+	board.UserId = user.Id
+	//can user create board?
+	canCreate, err := repos.Repos.RoleRepository.CanUserCreateBoard(user, board)
+	if err != nil {
+		return err
+	}
+	if !canCreate {
+		return c.Status(http.StatusForbidden).JSON(map[string]string{"message": "You are not authorized to create this board"})
+	}
 	if err := repos.Repos.BoardRepository.Create(board); err != nil {
 		return err
 	}
 	return c.Status(http.StatusCreated).JSON(board)
+
 }
 
 func GetBoard(c *fiber.Ctx) error {

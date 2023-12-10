@@ -99,6 +99,20 @@ func (r *roleRepo) FindUsersByRoleName(name string) ([]structs.UserWithRoles, er
 	return usersWithRoles, nil
 }
 
+func (r *roleRepo) CanUserCreateBoard(user structs.User, board structs.Board) (bool, error) {
+	//return true, nil if user role is admin or project manager
+	userModel := models.User{}
+	if err := r.storage.Find(&user).Where("id =?", user.Id).Error; err != nil {
+		return false, err
+	}
+	for _, role := range userModel.Roles {
+		if role.Name == "admin" || role.Name == "project_owner" {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
 // unassign user from role
 func (r *roleRepo) UnassignUserFromRole(userId uint, roleId uint) error {
 

@@ -38,6 +38,7 @@ func (r *boardRepo) Create(board structs.Board) error {
 	}
 	return nil
 }
+
 func (r *boardRepo) Get(uilid string) models.Board {
 	board := models.Board{}
 	r.storage.First(&board, "id = ?", uilid)

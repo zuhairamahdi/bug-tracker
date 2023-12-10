@@ -3,6 +3,7 @@ package repos
 import (
 	"bugtracker/models"
 	"bugtracker/structs"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -16,13 +17,19 @@ func newBoardUserRoleRepo(storage *gorm.DB) *boardUserRoleRepo {
 }
 
 func (r *boardUserRoleRepo) AssignUserToBoardRole(user structs.User, role models.Role, board models.Board) error {
-	boardUserRole := models.BoardUserRole{
-		UserID:  user.Id,
-		RoleID:  role.ID,
-		BoardID: board.ID,
-	}
-	if query := r.storage.Create(&boardUserRole); query.Error != nil {
-		return query.Error
+	//Check if user is already assigned to role
+	boardUserRole := models.BoardUserRole{}
+	if err := r.storage.Find(&boardUserRole).Where("user_id =? AND role_id =? AND board_id =?", user.Id, role.ID, board.ID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			boardUserRole = models.BoardUserRole{
+				UserID:  user.Id,
+				RoleID:  role.ID,
+				BoardID: board.ID,
+			}
+			if err := r.storage.Create(&boardUserRole).Error; err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -52,6 +59,17 @@ func (r *boardUserRoleRepo) IsUserHasRoleForBoard(user structs.User, role models
 	if query := r.storage.Where("board_id =? and user_id =? and role_id =?", board.ID, user.Id, role.ID).Find(&boardUserRoles); query.Error != nil {
 		return false, query.Error
 	}
+	//Get user roles from Role
+	userModel := models.User{}
+	if err := r.storage.Find(&user).Where("id =?", user.Id).Error; err != nil {
+		return false, err
+	}
+	for _, role := range userModel.Roles {
+		if role.Name == "admin" {
+			return true, nil
+		}
+	}
+
 	if len(boardUserRoles) > 0 {
 		return true, nil
 	}
