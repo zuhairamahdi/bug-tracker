@@ -1,7 +1,7 @@
 package models
 
 type Comment struct {
-	ID        uint   `json:"id"`
+	ID        uint   `json:"id" gorm:"primaryKey"`
 	Content   string `json:"content"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
