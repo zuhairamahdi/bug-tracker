@@ -49,12 +49,12 @@ func SendEmail(to string, subject string, data EmailTemplateData, templateName s
 	emailBody = strings.Replace(emailBody, "%Url%", data.Url, -1)
 
 	// Set up SMTP authentication credentials
-	smtpHost := "smtp.yourserver.com"
+	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := "587"
-	auth := smtp.PlainAuth("", "your_email@example.com", "your_password", smtpHost)
+	auth := smtp.PlainAuth("", os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASS"), smtpHost)
 
 	// Set up email headers
-	from := "your_email@example.com"
+	from := os.Getenv("FROM_EMAIL")
 
 	// Compose the email message
 	msg := []byte("To: " + to + "\r\n" +
