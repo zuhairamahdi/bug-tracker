@@ -122,7 +122,9 @@ var DefaultSettings = []Settings{
 						"updateColumn",
 						"createBoardRole",
 						"deleteBoardRole",
-						"updateBoardRole"
+						"updateBoardRole",
+						"assignUserToRole",
+						"unassignUserToRole",
 					]
 				},
 				{
@@ -156,4 +158,5 @@ var DefaultSettings = []Settings{
 				},
 				]
 			}`),
+		Name: "Admin for Roles",
 	}
