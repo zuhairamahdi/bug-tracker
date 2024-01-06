@@ -65,10 +65,13 @@ func SendEmail(to string, subject string, data EmailTemplateData, templateName s
 		emailBody + "\r\n")
 
 	// Send the email using SMTP
-	err = smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, msg)
+	var toEmails []string
+	toEmails = append(toEmails, to)
+	err = smtp.SendMail(smtpHost+":"+smtpPort, auth, from, toEmails, msg)
 	if err != nil {
 		return err
 	}
+	return nil
 }
 
 func loadHTMLTemplate(filePath string) (string, error) {
